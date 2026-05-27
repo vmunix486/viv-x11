@@ -9,7 +9,7 @@ vmunix's image viewer, using stb, for X11.
  - Fairly portable (no linux-specific things, _could_ probably run on BSD's)
  - Supports lots of image formats (jpeg, png, tga, bmp, psd, static gif, hdr, pic, pnm)
  - A little small (549 lines, 455 SLOC)
- - Only needs Xlib, Xaw, and Athena
+ - Only needs Xlib, Xaw, Xt, and Athena
 
 # Compilation Guide
 
