@@ -14,7 +14,9 @@ Just run `make` if you're on a distro that uses `/usr/X11/lib64`. An example wou
 
 # Usage
 
-`viv <path to image>`
+```
+viv <path to image>
+```
 
 If you start it without any arguements, then it will first try to open a file picker with Zenity, and if Zenity is not installed, then it falls back to an Athena based file inputer.
 
