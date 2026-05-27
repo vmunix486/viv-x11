@@ -32,6 +32,7 @@ static XImage*   gXImage      = NULL;
 static int       gImageWidth  = 0;
 static int       gImageHeight = 0;
 static int       gScreen      = 0;
+static unsigned long gBackground = 0;
 
 // Athena dialog state
 static XtAppContext  gAppContext   = NULL;
@@ -207,8 +208,7 @@ static void DrawImage(void)
     }
 
     // Clear background
-    XSetForeground(gDisplay, gGC,
-                   XWhitePixel(gDisplay, gScreen));
+    XSetForeground(gDisplay, gGC, gBackground);
     XFillRectangle(gDisplay, gWindow, gGC, 0, 0, winW, winH);
 
     XPutImage(gDisplay, gWindow, gGC, scaledImg,
@@ -418,26 +418,23 @@ int main(int argc, char* argv[])
     XtRealizeWidget(gShellWidget);   // must be realised before we can make children
 
     // Create the main viewer window (plain Xlib — no Xt)
-    unsigned long bg = XAllocNamedColor(gDisplay,
-                           DefaultColormap(gDisplay, gScreen),
-                           "gray78", // close to RGB(200,200,200)
-                           &(XColor){}, &(XColor){})
-                       ? ((XColor){ .pixel=0 }, // I'm sorry -vmunix
-                          [](Display* d, Colormap cm) { // Win32 is miles better
-                              XColor exact, screen;
-                              XAllocNamedColor(d, cm, "gray78", &screen, &exact);
-                              return screen.pixel;
-                          }(gDisplay, DefaultColormap(gDisplay, gScreen)))
-                       : XWhitePixel(gDisplay, gScreen);
+	XColor grayColor, dummy;
+	XAllocNamedColor(gDisplay,
+			DefaultColormap(gDisplay, gScreen),
+			"gray78",
+			&grayColor, &dummy);
+	unsigned long bg = grayColor.pixel;
 
     unsigned long fg = XBlackPixel(gDisplay, gScreen);
+
+	gBackground = grayColor.pixel;
 
     gWindow = XCreateSimpleWindow(
         gDisplay,
         DefaultRootWindow(gDisplay),
         0, 0,
         800, 600,
-        1, fg, bg);
+        1, fg, gBackground);
 
     XStoreName(gDisplay, gWindow, "viv");
 
