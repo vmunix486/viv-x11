@@ -418,7 +418,18 @@ int main(int argc, char* argv[])
     XtRealizeWidget(gShellWidget);   // must be realised before we can make children
 
     // Create the main viewer window (plain Xlib — no Xt)
-    unsigned long bg = XWhitePixel(gDisplay, gScreen);
+    unsigned long bg = XAllocNamedColor(gDisplay,
+                           DefaultColormap(gDisplay, gScreen),
+                           "gray78", // close to RGB(200,200,200)
+                           &(XColor){}, &(XColor){})
+                       ? ((XColor){ .pixel=0 }, // I'm sorry -vmunix
+                          [](Display* d, Colormap cm) { // Win32 is miles better
+                              XColor exact, screen;
+                              XAllocNamedColor(d, cm, "gray78", &screen, &exact);
+                              return screen.pixel;
+                          }(gDisplay, DefaultColormap(gDisplay, gScreen)))
+                       : XWhitePixel(gDisplay, gScreen);
+
     unsigned long fg = XBlackPixel(gDisplay, gScreen);
 
     gWindow = XCreateSimpleWindow(

@@ -1,6 +1,6 @@
 # You should probably change these variables. Especially LIBPATH
 CXX = c++
-CXXFLAGS = -O3
+CXXFLAGS = -O3 -fpermissive
 LIBS = -lX11 -lXt -lXaw
 LIBPATH = -L/usr/X11/lib64
 STATICFLAGS = -static -static-libgcc
