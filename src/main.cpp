@@ -347,11 +347,36 @@ static void RunAthenaDialog(void)
         NULL);
     XtAddCallback(cancelBtn, XtNcallback, AthenaCancelCb, NULL);
 
-    XtPopup(gDialogShell, XtGrabExclusive);
+	// Tell the WM this window accepts input focus
+	XtVaSetValues(gDialogShell, XtNinput, True, NULL);
 
-    // Run a nested Xt event loop until the user clicks OK or Cancel
-    while (gDialogDone == 0)
-        XtAppProcessEvent(gAppContext, XtIMAll);
+	XtPopup(gDialogShell, XtGrabExclusive);
+
+	// Flush so the dialog window is actually mapped before we set focus
+	// Wait until the dialog is actually viewable before setting focus,
+	// otherwise XSetInputFocus throws a BadMatch error.
+	{
+		XEvent ev;
+		Window dialogWin = XtWindow(gDialogShell);
+		while (true)
+		{
+			XWindowAttributes wa;
+			XGetWindowAttributes(gDisplay, dialogWin, &wa);
+			if (wa.map_state == IsViewable)
+				break;
+			XtAppNextEvent(gAppContext, &ev);
+			XtDispatchEvent(&ev);
+		}
+	}
+
+	XSetInputFocus(gDisplay,
+			XtWindow(gTextWidget),
+			RevertToParent,
+			CurrentTime);
+
+	// Run a nested Xt event loop until the user clicks OK or Cancel
+	while (gDialogDone == 0)
+		XtAppProcessEvent(gAppContext, XtIMAll);
 
     XtPopdown(gDialogShell);
     XtDestroyWidget(gDialogShell);
