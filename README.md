@@ -3,6 +3,9 @@ vmunix's image viewer, using stb, for X11.
 
 # Features
 
+<img height="500" alt="vlcsnap-2026-05-27-12h16m47s166" src="https://github.com/user-attachments/assets/4377077c-f711-49fc-9e2c-17f1857f2b73" />
+
+
  - Fairly portable (no linux-specific things, _could_ probably run on BSD's)
  - Supports lots of image formats (jpeg, png, tga, bmp, psd, static gif, hdr, pic, pnm)
  - A little small (549 lines, 455 SLOC)
